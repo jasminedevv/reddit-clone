@@ -1,0 +1,23 @@
+<fieldset>
+    <!-- TITLE -->
+    <p>
+        <div class="form-group">
+            <label for="post-title">Title</label><br>
+            <input class="form-control" id="post-title" type="text" name="title" value="{{ this.title }}" />
+        </div>
+    </p>
+    <!-- LINK -->
+    <p>
+        <div class="form-group">
+            <label for="post-title">Link</label><br>
+            <input class="form-control" id="post-title" type="text" name="link" value="{{ this.link }}" />
+        </div>
+    </p>
+
+    <!-- DESCRIPTION -->
+    <p>
+        <label for="post-body">Description</label><br>
+        <textarea class="form-control" id="post-body" name="body" rows="10" />{{ this.body }}</textarea>
+    </p>
+
+</fieldset>
