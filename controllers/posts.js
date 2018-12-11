@@ -8,7 +8,7 @@ module.exports = (app) => {
         res.render('posts-new');
     });
 
-    app.get('/posts', (req, res) => {
+    app.get('/', (req, res) => {
         Post.find(function (err, posts) {
             res.render('posts', { posts: posts });
         })

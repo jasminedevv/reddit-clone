@@ -9,6 +9,7 @@ const methodOverride = require('method-override')
 
 const posts = require("./controllers/posts");
 const comments = require("./controllers/comments");
+const auth = require("./controllers/auth");
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -29,6 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/reddit-clone', 
     throw err;
 })
 
+auth(app)
 posts(app);
 comments(app);
 
