@@ -1,5 +1,10 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const exphbs = require('express-handlebars');
+
+var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+
 const app = express();
 const port = 3000;
 
@@ -16,6 +21,8 @@ app.set('view engine', 'handlebars');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser()); // Add this after you initialize express.
 
 
 // MONGOOSE STUFF
