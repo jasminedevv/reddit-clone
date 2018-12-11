@@ -4,7 +4,7 @@
   "description": "A ripoff or reddit.com",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +14,10 @@
     "handlebars": "^4.0.12",
     "method-override": "^3.0.0",
     "mongoose": "^5.3.9"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }

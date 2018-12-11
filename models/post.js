@@ -1,13 +1,11 @@
-const mongoose = require('mongoose')
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
-const Post = mongoose.model('Post', {
-    title: String,
-    body: String,
-    link: String,
-    // movieId: { 
-    //     type: String, required: true 
-    // }
-
+var PostSchema = new Schema({
+    title: { type: String, required: true },
+    link: { type: String, required: true },
+    subreddit: { type: String, required: true },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
-module.exports = Post
+module.exports = mongoose.model('Post', PostSchema);

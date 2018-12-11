@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override')
 
 const posts = require("./controllers/posts");
+const comments = require("./controllers/comments");
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -29,6 +30,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/reddit-clone', 
 })
 
 posts(app);
+comments(app);
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
