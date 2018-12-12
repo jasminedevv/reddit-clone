@@ -68,7 +68,7 @@ module.exports = (app) => {
         .populate('comments')
         .populate('author')
         .then( (post) => {
-            post.author = post.author.username;
+            
           res.render('post', {post});
         }).catch((err) => {
           console.log(err.message);

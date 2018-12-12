@@ -8,10 +8,9 @@ module.exports = (app) => {
     app.post("/posts/:postId/comments", (req, res) => {
         var comment = new Comment(req.body);
         
-        User.findById(req.user._id).then((user) => {
+        User.findById(req.user).then((user) => {
             comment.author = user
             console.log(user);
-        }).then(() => {
             Post.findById(req.params.postId).exec(function (err, post) {
                 // UNSHIFT A NEW COMMENT
                 post.comments.unshift(comment);
