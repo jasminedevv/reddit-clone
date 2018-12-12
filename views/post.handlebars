@@ -1,16 +1,20 @@
 <div class="container">
 
     {{> post post}}
+    
     <br>
     {{> comment-form}}
     <br>
-    {{#each post.comments}}
-    <div class="card">
-        <div class="card-body">
-            <p class="card-text">{{this.content}}</p>
-            <a href="/posts/{{post._id}}/comments/{{this._id}}/replies/new">Reply</a>
+    <div>
+        <p>Comments:</p>
+        {{#each post.comments}}
+        <div class="card-body list-group-item">
+            <a href="/comments/{{this._id}}/new">Comment</a>
+            <p>{{this.content}}</p>
+            {{#if this.comments}}
+            {{> comments comments}}
+            {{/if}}
         </div>
+        {{/each}}
     </div>
-    <br>
-    {{/each}}
 </div>

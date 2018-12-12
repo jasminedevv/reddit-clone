@@ -12,7 +12,7 @@ module.exports = (app) => {
 
     app.get('/posts', (req, res) => {
         Post.find(function (err, posts) {
-            res.render('posts', { posts: posts });
+            res.render('posts', posts);
         })
     });
 
@@ -32,6 +32,7 @@ module.exports = (app) => {
 
         User.findById(req.user._id).then((user) => {
             post.author = user
+            console.log(user);
             return post.save()
         }).then(() => {
             res.redirect('/posts/' + post._id)
@@ -40,36 +41,58 @@ module.exports = (app) => {
             res.redirect('/posts')
         })
     })
-    /*
-    app.post("/posts", (req, res) => {
-        var post = new Post(req.body);
-        post.author = req.user._id;
- 
-        post
-            .save()
-            .then(post => {
-                return User.findById(req.user._id);
-            })
-            .then(user => {
-                user.posts.unshift(post);
-                user.save();
-                // REDIRECT TO THE NEW POST
-                res.redirect("/posts/" + post._id);
-            })
-            .catch(err => {
-                console.log(err.message);
-            });
-    });
-    */
+
+    // DELETE
+    app.post('/posts/:id', function (req, res) {
+        console.log("DELETE post");
+        Post.findByIdAndRemove(req.params.id).then((post) => {
+            res.redirect('/');
+        }).catch((err) => {
+            console.log(err.message);
+        })
+    })
 
     // SHOW ONE POST
+    // app.get('/posts/:id', (req, res) => {
+    //     // LOOK UP THE POST
+    //     Post.findById(req.params.id).populate('comments').then((post) => {
+    //         res.render('post', post);
+    //     }).catch((err) => {
+    //         console.log(err.message)
+    //     })
+    // });
+
     app.get('/posts/:id', (req, res) => {
         // LOOK UP THE POST
-        Post.findById(req.params.id).populate('comments').then((post) => {
-            res.render('post.handlebars', { post })
+        Post.findById(req.params.id)
+        .populate('comments')
+        .populate('author')
+        .then( (post) => {
+            post.author = post.author.username;
+          res.render('post', {post});
         }).catch((err) => {
-            console.log(err.message)
-        })
+          console.log(err.message);
+        });
+      });
+
+    app.put("/posts/:id/vote-up", function (req, res) {
+        Post.findById(req.params.id).exec(function (err, post) {
+            // post.upVotes.push(req.user._id);
+            post.voteScore = post.votes + 1;
+            post.save();
+
+            res.status(200);
+        });
+    });
+
+    app.put("/posts/:id/vote-down", function (req, res) {
+        Post.findById(req.params.id).exec(function (err, post) {
+            // post.downVotes.push(req.user._id);
+            post.voteScore = post.votes - 1;
+            post.save();
+
+            res.status(200);
+        });
     });
 
     // SUBREDDIT
@@ -93,30 +116,10 @@ module.exports = (app) => {
 
         Post.find({})
             .then(posts => {
-                res.render("posts.handlebars", { posts, currentUser });
+                res.render("posts", { posts, currentUser });
             })
             .catch(err => {
                 console.log(err.message);
             });
     });
-
-    app.put("/posts/:id/vote-up", function(req, res) {
-        Post.findById(req.params.id).exec(function(err, post) {
-          post.upVotes.push(req.user._id);
-          post.voteScore = post.voteTotal + 1;
-          post.save();
-      
-          res.status(200);
-        });
-      });
-      
-      app.put("/posts/:id/vote-down", function(req, res) {
-        Post.findById(req.params.id).exec(function(err, post) {
-          post.downVotes.push(req.user._id);
-          post.voteScore = post.voteTotal - 1;
-          post.save();
-      
-          res.status(200);
-        });
-      });
 }

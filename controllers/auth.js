@@ -2,9 +2,14 @@ const User = require("../models/user");
 const jwt = require('jsonwebtoken');
 
 module.exports = app => {
+
     app.get('/signup', (req, res) => {
-        console.log('uhhhhhhhh')
-        res.render('signup');
+        var currentUser = req.user;
+        if (currentUser) {
+            res.redirect('/');
+        } else {
+            res.render('signup', currentUser);
+        }
     });
 
     // SIGN UP POST
@@ -12,10 +17,10 @@ module.exports = app => {
         // Create User and JWT
         const user = new User(req.body);
 
-        user
-            .save()
-            .then(user => {
+        user.save()
+            .then((user) => {
                 var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+                res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
                 res.redirect("/");
             })
             .catch(err => {
@@ -24,25 +29,13 @@ module.exports = app => {
             });
     });
 
-    // SIGN UP POST
-    app.post("/signup", (req, res) => {
-        // Create User
-        const user = new User(req.body);
-
-        user.save().then((user) => {
-            var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-            res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-            res.redirect('/');
-        });
-    });
-
     app.get('/logout', (req, res) => {
         res.clearCookie('nToken');
         res.redirect('/');
     });
 
     app.get('/login', (req, res) => {
-        res.render('login.handlebars');
+        res.render('login');
     });
 
     // LOGIN
@@ -51,9 +44,9 @@ module.exports = app => {
         const password = req.body.password;
         // Find this user name
         User.findOne({ username }, "username password")
-            .then(user => {
+            .then((user) => {
                 if (!user) {
-                    // User not found
+                    // User not found or password does not match
                     return res.status(401).send({ message: "Wrong Username or Password" });
                 }
                 // Check the password
