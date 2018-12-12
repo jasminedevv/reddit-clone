@@ -3,9 +3,12 @@
     <a class="navbar-brand" href="/">Reddit.js</a>
     <a href="/posts/new">Post</a>
     <div class="nav navbar-nav navbar-right">
+      {{#if currentUser}}
+      <p>{{ currentUser.username }}</p><a class="btn btn-primary" href="/logout">log out</a>
+      {{else}}
       <a class="btn btn-primary" href="/login">Login</a>
       <a class="btn btn-primary" href="/signup">Sign Up</a>
-      <a class="btn btn-primary" href="/logout">log out</a>
+      {{/if}}
     </div>
   </div>
 </nav>

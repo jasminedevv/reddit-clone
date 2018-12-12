@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const User = require('../models/user')
 
 module.exports = (app) => {
 
@@ -8,7 +9,7 @@ module.exports = (app) => {
         res.render('posts-new');
     });
 
-    app.get('/', (req, res) => {
+    app.get('/posts', (req, res) => {
         Post.find(function (err, posts) {
             res.render('posts', { posts: posts });
         })
@@ -16,19 +17,49 @@ module.exports = (app) => {
 
     // app.get()
 
-    // ADD NEW POST
+    // CREATE
+
     app.post('/posts', (req, res) => {
-        // req.body needs to contain MovieId
-        console.log(req.body);
-        Post.create(req.body)
-            .then((post) => {
-                res.redirect(`/posts/${post.id}`);
-                console.log(post.id)
+
+        // If not logged in, do this
+        if (req.user == null) {
+            res.redirect('/login');
+        }
+
+        // INSTANTIATE INSTANCE OF POST MODEL
+        var post = new Post(req.body);
+
+        User.findById(req.user._id).then((user) => {
+            post.author = user
+            return post.save()
+        }).then(() => {
+            res.redirect('/posts/' + post._id)
+        }).catch((err) => {
+            console.log(err.message);
+            res.redirect('/posts')
+        })
+    })
+    /*
+    app.post("/posts", (req, res) => {
+        var post = new Post(req.body);
+        post.author = req.user._id;
+ 
+        post
+            .save()
+            .then(post => {
+                return User.findById(req.user._id);
             })
-            .catch((err) => {
-                console.log(err.message)
+            .then(user => {
+                user.posts.unshift(post);
+                user.save();
+                // REDIRECT TO THE NEW POST
+                res.redirect("/posts/" + post._id);
             })
+            .catch(err => {
+                console.log(err.message);
+            });
     });
+    */
 
     // SHOW ONE POST
     app.get('/posts/:id', (req, res) => {
@@ -54,5 +85,17 @@ module.exports = (app) => {
         }).catch((err) => {
             console.log(err)
         })
+    });
+
+    app.get("/", (req, res) => {
+        var currentUser = req.user;
+
+        Post.find({})
+            .then(posts => {
+                res.render("posts.handlebars", { posts, currentUser });
+            })
+            .catch(err => {
+                console.log(err.message);
+            });
     });
 }

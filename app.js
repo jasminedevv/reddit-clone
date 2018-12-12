@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3000;
 
-// no idea why I need these
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override')
 
@@ -16,6 +15,7 @@ const posts = require("./controllers/posts");
 const comments = require("./controllers/comments");
 const auth = require("./controllers/auth");
 
+// MIDDLEWARE
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
@@ -24,6 +24,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser()); // Add this after you initialize express.
 
+var checkAuth = (req, res, next) => {
+    console.log("Checking authentication");
+    if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+      req.user = null;
+    } else {
+      var token = req.cookies.nToken;
+      var decodedToken = jwt.decode(token, { complete: true }) || {};
+      req.user = decodedToken.payload;
+      console.log(req.user);
+    }
+  
+    next();
+  };
+  app.use(checkAuth);
 
 // MONGOOSE STUFF
 const mongoose = require('mongoose');
