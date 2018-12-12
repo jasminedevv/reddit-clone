@@ -1,4 +1,4 @@
-<div class="card" style="width: 100%;">
+{{!-- <div class="card" style="width: 100%;">
   <div class="card-body">
     <a href="/posts/{{ this.id }}">
       <h5 class="card-title">{{ this.title }}</h5>
@@ -7,3 +7,19 @@
     <p>By {{ this.author.username }}</p>
   </div>
 </div>
+ --}}
+<li class="list-group-item">
+  <div class="lead">{{this.title}}</div>
+  <a href="{{this.link}}" target="_blank">{{this.link}}<a>
+  <div class="text-right">
+    <a href="/{{this.subreddit}}">{{this.subreddit}}<a>
+  </div>
+
+  <form class="vote-up" data-id="{{this._id}}">
+    <button type="submit">Vote Up</button>
+  </form>
+  |
+  <form class="vote-down" data-id="{{this._id}}">
+    <button type="submit">Vote Down</button>
+  </form>
+</li>
